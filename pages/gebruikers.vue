@@ -73,9 +73,10 @@ async function submit() {
     <button type="submit">Voeg toe</button>
   </form>
 
-  <ul class="item-list">
-    <li v-for="u in users" :key="u.id">
-      <div v-if="editingId === u.id" class="edit-row">
+  <div class="page-container">
+    <ul class="item-list">
+      <li v-for="u in users" :key="u.id">
+        <div v-if="editingId === u.id" class="edit-row">
         <input v-model="editForm.email" type="email" placeholder="email" />
         <input v-model="editForm.name" placeholder="naam" />
         <input v-model="editForm.password" type="password" placeholder="nieuw wachtwoord" />
@@ -93,30 +94,7 @@ async function submit() {
         </span>
       </div>
     </li>
-  </ul>
+    </ul>
+  </div>
 </template>
 
-<style scoped>
-.item-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem auto;
-  max-width: 600px;
-}
-
-.item-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.item-list li:last-child {
-  border-bottom: none;
-}
-
-.item-list button {
-  margin-left: 0.5rem;
-}
-</style>
