@@ -2,10 +2,18 @@
   <div class="ras-select">
     <input
       v-model="search"
+      list="soorten-suggesties"
       class="search-input"
       type="text"
       placeholder="Zoek ras"
     />
+    <datalist id="soorten-suggesties">
+      <option
+        v-for="soort in filteredSoorten.slice(0, 5)"
+        :key="soort.id"
+        :value="soort.naam"
+      />
+    </datalist>
     <select :value="modelValue" @change="update($event.target.value)">
       <option disabled value="">Kies ras</option>
       <option

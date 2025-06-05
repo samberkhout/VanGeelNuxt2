@@ -42,10 +42,18 @@ async function remove(id: number) {
     <h2>Soorten</h2>
     <input
       v-model="search"
+      list="soorten-suggesties"
       class="search-input"
       type="text"
       placeholder="Zoek soort of leverancier"
     />
+    <datalist id="soorten-suggesties">
+      <option
+        v-for="soort in filteredSoorten.slice(0, 5)"
+        :key="soort.id"
+        :value="soort.naam + ' - ' + soort.leverancier.naam"
+      />
+    </datalist>
     <ul class="item-list">
       <li v-for="soort in filteredSoorten" :key="soort.id">
         <div v-if="editingId === soort.id" class="edit-row">
