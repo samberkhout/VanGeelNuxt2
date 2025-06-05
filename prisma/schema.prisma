@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Soort {
+  id         Int         @id @default(autoincrement())
+  naam       String
+  Oppotten   Oppotten[]
+  Trip       Trip[]
+  ZiekZoeken ZiekZoeken[]
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  role     Role
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Oppotten {
+  id          Int      @id @default(autoincrement())
+  leverweek   Int
+  rasId       Int
+  opgepot     Int
+  weggegooid  Int
+  reden       String
+  extraReden  String?
+  createdAt   DateTime @default(now())
+  soort       Soort    @relation(fields: [rasId], references: [id])
+}
+
+model Trip {
+  id         Int      @id @default(autoincrement())
+  leverweek  Int
+  oppotweek  Int
+  rasId      Int
+  aantal     Int
+  locatieX   Int
+  locatieY   Int
+  createdAt  DateTime @default(now())
+  soort      Soort    @relation(fields: [rasId], references: [id])
+}
+
+model ZiekZoeken {
+  id         Int      @id @default(autoincrement())
+  leverweek  Int
+  rasId      Int
+  weggegooid Int
+  reden      String
+  extraReden String?
+  createdAt  DateTime @default(now())
+  soort      Soort    @relation(fields: [rasId], references: [id])
+}
+
+model Potworm {
+  id         Int      @id @default(autoincrement())
+  jaar       Int
+  week       Int
+  afdeling1  Int
+  afdeling16 Int
+  createdAt  DateTime @default(now())
+}
