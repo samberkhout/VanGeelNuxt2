@@ -3,6 +3,7 @@ const { data: soorten, refresh } = await useFetch('/api/soorten')
 const { data: leveranciers } = await useFetch('/api/leveranciers')
 
 const search = ref('')
+const showSuggestions = ref(false)
 const filteredSoorten = computed(() =>
   (soorten.value || []).filter((s: any) =>
     s.naam.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -12,6 +13,11 @@ const filteredSoorten = computed(() =>
 
 const editingId = ref<number | null>(null)
 const editForm = reactive({ naam: '', leverancierId: '' as number | '' })
+
+function selectSuggestion(name: string) {
+  search.value = name
+  showSuggestions.value = false
+}
 
 function startEdit(s: any) {
   editingId.value = s.id
@@ -46,12 +52,14 @@ async function remove(id: number) {
         class="search-input"
         type="text"
         placeholder="Zoek soort of leverancier"
+        @focus="showSuggestions = true"
+        @input="showSuggestions = true"
       />
-      <ul v-if="search" class="suggestions">
+      <ul v-if="search && showSuggestions" class="suggestions">
         <li
           v-for="soort in filteredSoorten.slice(0, 5)"
           :key="soort.id"
-          @click="search = soort.naam"
+          @click="selectSuggestion(soort.naam)"
         >
           {{ soort.naam }} - {{ soort.leverancier.naam }}
         </li>

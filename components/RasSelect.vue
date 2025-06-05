@@ -6,12 +6,14 @@
         class="search-input"
         type="text"
         placeholder="Zoek ras"
+        @focus="showSuggestions = true"
+        @input="showSuggestions = true"
       />
-      <ul v-if="search" class="suggestions">
+      <ul v-if="search && showSuggestions" class="suggestions">
         <li
           v-for="soort in filteredSoorten.slice(0, 5)"
           :key="soort.id"
-          @click="search = soort.naam"
+          @click="selectSuggestion(soort.naam)"
         >
           {{ soort.naam }}
         </li>
@@ -37,11 +39,17 @@ const emit = defineEmits(['update:modelValue']);
 const { data: soorten } = await useFetch('/api/soorten');
 
 const search = ref('');
+const showSuggestions = ref(false);
 const filteredSoorten = computed(() =>
   (soorten.value || []).filter((s: any) =>
     s.naam.toLowerCase().includes(search.value.toLowerCase())
   )
 );
+
+function selectSuggestion(name: string) {
+  search.value = name;
+  showSuggestions.value = false;
+}
 
 function update(value: string) {
   emit('update:modelValue', Number(value));

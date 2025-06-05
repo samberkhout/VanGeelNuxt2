@@ -2,6 +2,7 @@
 const { data: leveranciers, refresh } = await useFetch('/api/leveranciers')
 
 const search = ref('')
+const showSuggestions = ref(false)
 const filteredLeveranciers = computed(() =>
   (leveranciers.value || []).filter((l: any) =>
     l.naam.toLowerCase().includes(search.value.toLowerCase())
@@ -10,6 +11,11 @@ const filteredLeveranciers = computed(() =>
 
 const editingId = ref<number | null>(null)
 const editName = ref('')
+
+function selectSuggestion(name: string) {
+  search.value = name
+  showSuggestions.value = false
+}
 
 function startEdit(lev: { id: number; naam: string }) {
   editingId.value = lev.id
@@ -40,12 +46,14 @@ async function remove(id: number) {
       class="search-input"
       type="text"
       placeholder="Zoek leverancier"
+      @focus="showSuggestions = true"
+      @input="showSuggestions = true"
     />
-    <ul v-if="search" class="suggestions">
+    <ul v-if="search && showSuggestions" class="suggestions">
       <li
         v-for="lev in filteredLeveranciers.slice(0, 5)"
         :key="lev.id"
-        @click="search = lev.naam"
+        @click="selectSuggestion(lev.naam)"
       >
         {{ lev.naam }}
       </li>
