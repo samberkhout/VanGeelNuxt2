@@ -18,9 +18,11 @@ const schema = z.object({
 })
 
 const error = ref('')
+const message = ref('')
 
 async function submit() {
   error.value = ''
+  message.value = ''
   const result = schema.safeParse({
     ...form,
     rasId: Number(form.rasId)
@@ -29,11 +31,22 @@ async function submit() {
     error.value = 'Ongeldige invoer'
     return
   }
-  await $fetch('/api/ziekzoeken', {
-    method: 'POST',
-    body: result.data
-  })
-  Object.assign(form, { leverweek: '', rasId: '', weggegooid: '', reden: 'te klein', extraReden: '' })
+  try {
+    await $fetch('/api/ziekzoeken', {
+      method: 'POST',
+      body: result.data
+    })
+    Object.assign(form, {
+      leverweek: '',
+      rasId: '',
+      weggegooid: '',
+      reden: 'te klein',
+      extraReden: ''
+    })
+    message.value = 'Registratie opgeslagen'
+  } catch (e) {
+    error.value = 'Fout bij opslaan'
+  }
 }
 </script>
 
@@ -49,6 +62,7 @@ async function submit() {
     </select>
     <input v-if="form.reden === 'anders'" v-model="form.extraReden" placeholder="extra reden" />
     <p style="color:red" v-if="error">{{ error }}</p>
+    <p style="color:green" v-if="message">{{ message }}</p>
     <button type="submit">Verstuur</button>
   </form>
 </template>

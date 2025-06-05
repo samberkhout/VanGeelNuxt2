@@ -12,6 +12,22 @@ const schema = z.object({
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const data = schema.parse(body)
-  const record = await prisma.ziekZoeken.create({ data })
+
+  const plant = await prisma.plant.upsert({
+    where: { soortId_leverweek: { soortId: data.rasId, leverweek: data.leverweek } },
+    update: {},
+    create: { soortId: data.rasId, leverweek: data.leverweek }
+  })
+
+  const record = await prisma.ziekZoeken.create({
+    data: {
+      plantId: plant.id,
+      soortId: data.rasId,
+      leverweek: data.leverweek,
+      aantalWeggooi: data.weggegooid,
+      redenWeggooi: data.reden,
+      andereReden: data.extraReden
+    }
+  })
   return record
 })

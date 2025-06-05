@@ -17,16 +17,28 @@ const schema = z.object({
 })
 
 const error = ref('')
+const message = ref('')
 
 async function submit() {
   error.value = ''
+  message.value = ''
   const result = schema.safeParse(form)
   if (!result.success) {
     error.value = 'Ongeldige invoer'
     return
   }
-  await $fetch('/api/potworm', { method: 'POST', body: result.data })
-  Object.assign(form, { jaar: currentYear, week: '', afdeling1: '', afdeling16: '' })
+  try {
+    await $fetch('/api/potworm', { method: 'POST', body: result.data })
+    Object.assign(form, {
+      jaar: currentYear,
+      week: '',
+      afdeling1: '',
+      afdeling16: ''
+    })
+    message.value = 'Registratie opgeslagen'
+  } catch (e) {
+    error.value = 'Fout bij opslaan'
+  }
 }
 </script>
 
@@ -37,6 +49,7 @@ async function submit() {
     <input v-model="form.afdeling1" type="number" placeholder="afdeling1" required />
     <input v-model="form.afdeling16" type="number" placeholder="afdeling16" required />
     <p style="color:red" v-if="error">{{ error }}</p>
+    <p style="color:green" v-if="message">{{ message }}</p>
     <button type="submit">Verstuur</button>
   </form>
 </template>
