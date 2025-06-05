@@ -4,9 +4,9 @@ import { hash } from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || 'sammie.berkhout2006@gmail.com'
-  const password = process.env.ADMIN_PASSWORD || 'Sam2006berkhout##'
-  const name = process.env.ADMIN_NAME || 'Sam Berkhout'
+  const email = process.env.ADMIN_EMAIL || 'sam@gmail.com'
+  const password = process.env.ADMIN_PASSWORD || 'Sam'
+  const name = process.env.ADMIN_NAME || 'Sam user'
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) {
@@ -16,7 +16,7 @@ async function main() {
 
   const hashed = await hash(password, 10)
   await prisma.user.create({
-    data: { email, name, password: hashed, rol: 'ADMIN' }
+    data: { email, name, password: hashed, rol: 'USER' }
   })
   console.log(`Admin created: ${email}`)
 }
