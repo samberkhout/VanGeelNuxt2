@@ -14,18 +14,20 @@ async function logout() {
     <header class="site-header">
       <h1>Plantenregistratie</h1>
       <nav class="nav-links">
-        <NuxtLink to="/oppotten">Oppotten</NuxtLink>
-        <NuxtLink to="/potworm">Potworm</NuxtLink>
-        <NuxtLink to="/trips">Trips</NuxtLink>
-        <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
-        <NuxtLink to="/leveranciers">Leveranciers</NuxtLink>
-        <NuxtLink to="/soorten">Soorten</NuxtLink>
-        <NuxtLink to="/beheer">Beheer</NuxtLink>
-        <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
-        <span v-else class="user-info">
-          {{ user.email }}
-          <button @click="logout">Logout</button>
-        </span>
+        <template v-if="user">
+          <NuxtLink to="/oppotten">Oppotten</NuxtLink>
+          <NuxtLink to="/potworm">Potworm</NuxtLink>
+          <NuxtLink to="/trips">Trips</NuxtLink>
+          <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
+          <NuxtLink to="/leveranciers">Leveranciers</NuxtLink>
+          <NuxtLink to="/soorten">Soorten</NuxtLink>
+          <NuxtLink to="/beheer">Beheer</NuxtLink>
+          <span class="user-info">
+            {{ user.email }}
+            <button @click="logout">Logout</button>
+          </span>
+        </template>
+        <NuxtLink v-else to="/login">Login</NuxtLink>
       </nav>
     </header>
     <NuxtRouteAnnouncer />
