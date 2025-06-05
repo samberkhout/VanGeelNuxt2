@@ -5,7 +5,7 @@ async function submit() {
   error.value = ''
   try {
     await $fetch('/api/auth/login', { method: 'POST', body: form })
-    await navigateTo('/oppotten')
+    window.location.href = '/oppotten'
   } catch (e) {
     error.value = 'Inloggen mislukt'
   }
