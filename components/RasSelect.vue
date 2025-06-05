@@ -41,6 +41,15 @@ watchEffect(() => {
   }
 });
 
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (!val && !showSuggestions.value) {
+      search.value = '';
+    }
+  }
+);
+
 const filteredSoorten = computed(() =>
   (soorten.value || []).filter((s: any) =>
     s.naam.toLowerCase().includes(search.value.toLowerCase())
