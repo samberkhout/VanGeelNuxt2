@@ -1,9 +1,10 @@
 import { prisma } from '../../prisma'
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
+import { getCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const currentId = useCookie('userId').value
+  const currentId = getCookie(event, 'userId')
   if (!currentId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }

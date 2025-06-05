@@ -1,5 +1,6 @@
+import { deleteCookie } from 'h3'
+
 export default defineEventHandler((event) => {
-  const cookie = useCookie('userId', { httpOnly: true, path: '/' })
-  cookie.value = null
+  deleteCookie(event, 'userId', { path: '/' })
   return { success: true }
 })

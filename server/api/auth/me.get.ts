@@ -1,7 +1,8 @@
 import { prisma } from '../../prisma'
+import { getCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const id = useCookie('userId').value
+  const id = getCookie(event, 'userId')
   if (!id) {
     return null
   }

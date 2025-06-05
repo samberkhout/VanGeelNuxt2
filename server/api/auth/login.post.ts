@@ -1,4 +1,5 @@
 import { prisma } from '../../prisma'
+import { setCookie } from 'h3'
 import { z } from 'zod'
 import { compare } from 'bcryptjs'
 
@@ -20,11 +21,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Ongeldige inloggegevens' })
   }
 
-  const cookie = useCookie('userId', {
+  setCookie(event, 'userId', user.id, {
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
   })
-  cookie.value = user.id
   return { id: user.id, email: user.email, name: user.name, rol: user.rol }
 })
