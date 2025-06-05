@@ -95,6 +95,16 @@ body {
   .nav-links a {
     padding: 0.5rem 0;
   }
+  .form-box {
+    width: 90%;
+    max-width: none;
+    padding: 0.5rem;
+  }
+  .form-box input,
+  .form-box select,
+  .form-box button {
+    width: 100%;
+  }
 }
 
 .form-box {
