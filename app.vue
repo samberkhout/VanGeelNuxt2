@@ -2,6 +2,13 @@
 const { data: user, refresh } = await useFetch('/api/auth/me', {
   headers: useRequestHeaders(['cookie'])
 })
+
+const showNav = ref(false)
+
+function toggleNav() {
+  showNav.value = !showNav.value
+}
+
 async function logout() {
   await $fetch('/api/auth/logout', { method: 'POST' })
   await refresh()
@@ -13,7 +20,8 @@ async function logout() {
   <div>
     <header class="site-header">
       <h1>Plantenregistratie</h1>
-      <nav class="nav-links">
+      <button class="nav-toggle" @click="toggleNav">☰</button>
+      <nav class="nav-links" :class="{ open: showNav }">
         <template v-if="user">
           <NuxtLink to="/oppotten">Oppotten</NuxtLink>
           <NuxtLink to="/potworm">Potworm</NuxtLink>
@@ -60,6 +68,15 @@ body {
   font-family: inherit;
 }
 
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 .nav-links {
   display: flex;
   gap: 1rem;
@@ -88,12 +105,29 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+  .nav-toggle {
+    display: block;
+  }
   .nav-links {
+    display: none;
     flex-direction: column;
     width: 100%;
   }
+  .nav-links.open {
+    display: flex;
+  }
   .nav-links a {
     padding: 0.5rem 0;
+  }
+  .form-box {
+    width: 90%;
+    max-width: none;
+    padding: 0.5rem;
+  }
+  .form-box input,
+  .form-box select,
+  .form-box button {
+    width: 100%;
   }
 }
 
