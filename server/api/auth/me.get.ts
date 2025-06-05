@@ -1,7 +1,7 @@
 import { prisma } from '../../prisma'
 
 export default defineEventHandler(async (event) => {
-  const id = useCookie(event, 'userId').value
+  const id = useCookie('userId').value
   if (!id) {
     return null
   }

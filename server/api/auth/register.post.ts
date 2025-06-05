@@ -3,7 +3,7 @@ import { hash } from 'bcryptjs'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
-  const currentId = useCookie(event, 'userId').value
+  const currentId = useCookie('userId').value
   if (!currentId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }

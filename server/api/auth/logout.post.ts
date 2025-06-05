@@ -1,5 +1,5 @@
 export default defineEventHandler((event) => {
-  const cookie = useCookie(event, 'userId', { httpOnly: true, path: '/' })
+  const cookie = useCookie('userId', { httpOnly: true, path: '/' })
   cookie.value = null
   return { success: true }
 })

@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Ongeldige inloggegevens' })
   }
 
-  const cookie = useCookie(event, 'userId', {
+  const cookie = useCookie('userId', {
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
