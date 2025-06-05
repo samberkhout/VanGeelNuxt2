@@ -2,7 +2,10 @@
   <div>
     <header class="site-header">
       <h1>Plantenregistratie</h1>
-      <nav class="nav-links">
+      <button class="menu-toggle" @click="menuOpen = !menuOpen" aria-label="Toggle navigation">
+        &#9776;
+      </button>
+      <nav :class="['nav-links', { open: menuOpen }]">
         <NuxtLink to="/oppotten">Oppotten</NuxtLink>
         <NuxtLink to="/potworm">Potworm</NuxtLink>
         <NuxtLink to="/trips">Trips</NuxtLink>
@@ -16,6 +19,11 @@
     <NuxtPage />
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+const menuOpen = ref(false)
+</script>
 
 <style>
 body {
@@ -33,6 +41,15 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .nav-links {
@@ -56,9 +73,16 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+  .menu-toggle {
+    display: block;
+  }
   .nav-links {
     flex-direction: column;
     width: 100%;
+    display: none;
+  }
+  .nav-links.open {
+    display: flex;
   }
   .nav-links a {
     padding: 0.5rem 0;
