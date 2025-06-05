@@ -7,6 +7,7 @@
         <NuxtLink to="/potworm">Potworm</NuxtLink>
         <NuxtLink to="/trips">Trips</NuxtLink>
         <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
+        <NuxtLink to="/beheer">Beheer</NuxtLink>
       </nav>
     </header>
     <NuxtRouteAnnouncer />
