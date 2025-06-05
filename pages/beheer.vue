@@ -46,9 +46,7 @@ async function submitSoort() {
       <p style="color:red" v-if="leverancierError">{{ leverancierError }}</p>
       <button type="submit">Voeg leverancier toe</button>
     </form>
-    <ul>
-      <li v-for="lev in leveranciers" :key="lev.id">{{ lev.naam }}</li>
-    </ul>
+    <!-- Lijst van bestaande leveranciers verwijderd -->
 
     <h2>Soorten</h2>
     <form class="form-box" @submit.prevent="submitSoort">
@@ -60,8 +58,6 @@ async function submitSoort() {
       <p style="color:red" v-if="soortError">{{ soortError }}</p>
       <button type="submit">Voeg soort toe</button>
     </form>
-    <ul>
-      <li v-for="soort in soorten" :key="soort.id">{{ soort.naam }} - {{ soort.leverancier.naam }}</li>
-    </ul>
+    <!-- Lijst van bestaande soorten verwijderd -->
   </div>
 </template>
