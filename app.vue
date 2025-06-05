@@ -21,7 +21,7 @@ async function logout() {
           <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
           <NuxtLink to="/leveranciers">Leveranciers</NuxtLink>
           <NuxtLink to="/soorten">Soorten</NuxtLink>
-          <NuxtLink to="/beheer">Beheer</NuxtLink>
+          <NuxtLink v-if="user.rol === 'ADMIN'" to="/beheer">Beheer</NuxtLink>
           <span class="user-info">
             {{ user.email }}
             <button @click="logout">Logout</button>
