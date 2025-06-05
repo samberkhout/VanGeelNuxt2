@@ -51,6 +51,20 @@ body {
   text-decoration: underline;
 }
 
+@media (max-width: 600px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+  .nav-links a {
+    padding: 0.5rem 0;
+  }
+}
+
 .form-box {
   background-color: #f5f5f5; /* wit/grijs vlak */
   padding: 1rem;
