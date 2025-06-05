@@ -37,7 +37,7 @@ async function submit() {
 </script>
 
 <template>
-  <form @submit.prevent="submit">
+  <form class="form-box" @submit.prevent="submit">
     <input v-model="form.leverweek" type="number" placeholder="leverweek" required />
     <RasSelect v-model="form.rasId" />
     <input v-model="form.opgepot" type="number" placeholder="opgepot" required />

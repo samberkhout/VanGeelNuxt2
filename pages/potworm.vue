@@ -31,7 +31,7 @@ async function submit() {
 </script>
 
 <template>
-  <form @submit.prevent="submit">
+  <form class="form-box" @submit.prevent="submit">
     <input v-model="form.jaar" type="number" />
     <input v-model="form.week" type="number" placeholder="week" required />
     <input v-model="form.afdeling1" type="number" placeholder="afdeling1" required />
