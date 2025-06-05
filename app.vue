@@ -51,12 +51,26 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  font-family: sans-serif;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-family: inherit;
 }
 
 .nav-links {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-links a {
