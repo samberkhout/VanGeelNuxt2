@@ -12,29 +12,43 @@ const soortSchema = z.object({ naam: z.string().min(1), leverancierId: z.number(
 
 const leverancierError = ref('')
 const soortError = ref('')
+const leverancierMsg = ref('')
+const soortMsg = ref('')
 
 async function submitLeverancier() {
   leverancierError.value = ''
+  leverancierMsg.value = ''
   const res = leverancierSchema.safeParse(leverancierForm)
   if (!res.success) {
     leverancierError.value = 'Ongeldige invoer'
     return
   }
-  await $fetch('/api/leveranciers', { method: 'POST', body: res.data })
-  await refreshLeveranciers()
-  leverancierForm.naam = ''
+  try {
+    await $fetch('/api/leveranciers', { method: 'POST', body: res.data })
+    await refreshLeveranciers()
+    leverancierForm.naam = ''
+    leverancierMsg.value = 'Toegevoegd'
+  } catch (e) {
+    leverancierError.value = 'Fout bij opslaan'
+  }
 }
 
 async function submitSoort() {
   soortError.value = ''
+  soortMsg.value = ''
   const res = soortSchema.safeParse({ ...soortForm, leverancierId: Number(soortForm.leverancierId) })
   if (!res.success) {
     soortError.value = 'Ongeldige invoer'
     return
   }
-  await $fetch('/api/soorten', { method: 'POST', body: res.data })
-  await Promise.all([refreshSoorten(), refreshLeveranciers()])
-  Object.assign(soortForm, { naam: '', leverancierId: '' })
+  try {
+    await $fetch('/api/soorten', { method: 'POST', body: res.data })
+    await Promise.all([refreshSoorten(), refreshLeveranciers()])
+    Object.assign(soortForm, { naam: '', leverancierId: '' })
+    soortMsg.value = 'Toegevoegd'
+  } catch (e) {
+    soortError.value = 'Fout bij opslaan'
+  }
 }
 </script>
 
@@ -44,6 +58,7 @@ async function submitSoort() {
     <form class="form-box" @submit.prevent="submitLeverancier">
       <input v-model="leverancierForm.naam" placeholder="naam" required />
       <p style="color:red" v-if="leverancierError">{{ leverancierError }}</p>
+      <p style="color:green" v-if="leverancierMsg">{{ leverancierMsg }}</p>
       <button type="submit">Voeg leverancier toe</button>
     </form>
     <!-- Lijst van bestaande leveranciers verwijderd -->
@@ -56,6 +71,7 @@ async function submitSoort() {
         <option v-for="lev in leveranciers" :key="lev.id" :value="lev.id">{{ lev.naam }}</option>
       </select>
       <p style="color:red" v-if="soortError">{{ soortError }}</p>
+      <p style="color:green" v-if="soortMsg">{{ soortMsg }}</p>
       <button type="submit">Voeg soort toe</button>
     </form>
     <!-- Lijst van bestaande soorten verwijderd -->
