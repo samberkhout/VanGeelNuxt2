@@ -20,6 +20,8 @@ model Plant {
 
   createdAt DateTime @default(now())
   gas       gas[]
+
+  @@unique([soortId, leverweek])
 }
 
 model Soort {
