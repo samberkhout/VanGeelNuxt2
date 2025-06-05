@@ -39,27 +39,15 @@ async function submit() {
 
 <template>
   <form class="form-box" @submit.prevent="submit">
-    <div>
-      <label>Leverweek</label>
-      <input v-model="form.leverweek" type="number" required />
-    </div>
+    <input v-model="form.leverweek" type="number" placeholder="leverweek" required />
     <RasSelect v-model="form.rasId" />
-    <div>
-      <label>Weggegooid</label>
-      <input v-model="form.weggegooid" type="number" required />
-    </div>
-    <div>
-      <label>Reden</label>
-      <select v-model="form.reden">
-        <option>te klein</option>
-        <option>rot</option>
-        <option>anders</option>
-      </select>
-    </div>
-    <div v-if="form.reden === 'anders'">
-      <label>Extra reden</label>
-      <input v-model="form.extraReden" />
-    </div>
+    <input v-model="form.weggegooid" type="number" placeholder="weggegooid" required />
+    <select v-model="form.reden">
+      <option>te klein</option>
+      <option>rot</option>
+      <option>anders</option>
+    </select>
+    <input v-if="form.reden === 'anders'" v-model="form.extraReden" placeholder="extra reden" />
     <p style="color:red" v-if="error">{{ error }}</p>
     <button type="submit">Verstuur</button>
   </form>
