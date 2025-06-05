@@ -1,15 +1,33 @@
+<script setup lang="ts">
+const { data: user, refresh } = await useFetch('/api/auth/me', {
+  headers: useRequestHeaders(['cookie'])
+})
+async function logout() {
+  await $fetch('/api/auth/logout', { method: 'POST' })
+  await refresh()
+  await navigateTo('/login')
+}
+</script>
+
 <template>
   <div>
     <header class="site-header">
       <h1>Plantenregistratie</h1>
       <nav class="nav-links">
-        <NuxtLink to="/oppotten">Oppotten</NuxtLink>
-        <NuxtLink to="/potworm">Potworm</NuxtLink>
-        <NuxtLink to="/trips">Trips</NuxtLink>
-        <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
-        <NuxtLink to="/leveranciers">Leveranciers</NuxtLink>
-        <NuxtLink to="/soorten">Soorten</NuxtLink>
-        <NuxtLink to="/beheer">Beheer</NuxtLink>
+        <template v-if="user">
+          <NuxtLink to="/oppotten">Oppotten</NuxtLink>
+          <NuxtLink to="/potworm">Potworm</NuxtLink>
+          <NuxtLink to="/trips">Trips</NuxtLink>
+          <NuxtLink to="/ziekzoeken">Ziekzoeken</NuxtLink>
+          <NuxtLink v-if="user.rol === 'ADMIN'" to="/leveranciers">Leveranciers</NuxtLink>
+          <NuxtLink v-if="user.rol === 'ADMIN'" to="/soorten">Soorten</NuxtLink>
+          <NuxtLink v-if="user.rol === 'ADMIN'" to="/beheer">Beheer</NuxtLink>
+          <span class="user-info">
+            {{ user.email }}
+            <button @click="logout">Logout</button>
+          </span>
+        </template>
+        <NuxtLink v-else to="/login">Login</NuxtLink>
       </nav>
     </header>
     <NuxtRouteAnnouncer />
@@ -33,12 +51,26 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  font-family: sans-serif;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-family: inherit;
 }
 
 .nav-links {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-links a {

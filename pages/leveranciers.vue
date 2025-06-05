@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ middleware: ["auth", "admin"] })
 const { data: leveranciers, refresh } = await useFetch('/api/leveranciers')
 
 const search = ref('')
