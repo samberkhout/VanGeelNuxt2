@@ -1,6 +1,13 @@
 <script setup lang="ts">
 const { data: leveranciers, refresh } = await useFetch('/api/leveranciers')
 
+const search = ref('')
+const filteredLeveranciers = computed(() =>
+  (leveranciers.value || []).filter((l: any) =>
+    l.naam.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+
 const editingId = ref<number | null>(null)
 const editName = ref('')
 
@@ -27,8 +34,14 @@ async function remove(id: number) {
 <template>
   <div class="page-container">
     <h2>Leveranciers</h2>
+    <input
+      v-model="search"
+      class="search-input"
+      type="text"
+      placeholder="Zoek leverancier"
+    />
     <ul class="item-list">
-      <li v-for="lev in leveranciers" :key="lev.id">
+      <li v-for="lev in filteredLeveranciers" :key="lev.id">
         <div v-if="editingId === lev.id" class="edit-row">
           <input v-model="editName" />
           <button @click="saveEdit(lev.id)">Opslaan</button>
@@ -54,6 +67,14 @@ async function remove(id: number) {
   padding: 1rem;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .item-list {

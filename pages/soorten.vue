@@ -2,6 +2,14 @@
 const { data: soorten, refresh } = await useFetch('/api/soorten')
 const { data: leveranciers } = await useFetch('/api/leveranciers')
 
+const search = ref('')
+const filteredSoorten = computed(() =>
+  (soorten.value || []).filter((s: any) =>
+    s.naam.toLowerCase().includes(search.value.toLowerCase()) ||
+    s.leverancier.naam.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+
 const editingId = ref<number | null>(null)
 const editForm = reactive({ naam: '', leverancierId: '' as number | '' })
 
@@ -32,8 +40,14 @@ async function remove(id: number) {
 <template>
   <div class="page-container">
     <h2>Soorten</h2>
+    <input
+      v-model="search"
+      class="search-input"
+      type="text"
+      placeholder="Zoek soort of leverancier"
+    />
     <ul class="item-list">
-      <li v-for="soort in soorten" :key="soort.id">
+      <li v-for="soort in filteredSoorten" :key="soort.id">
         <div v-if="editingId === soort.id" class="edit-row">
           <input v-model="editForm.naam" />
           <select v-model="editForm.leverancierId">
@@ -64,6 +78,14 @@ async function remove(id: number) {
   padding: 1rem;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .item-list {
