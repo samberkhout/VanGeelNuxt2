@@ -74,40 +74,4 @@ function selectSuggestion(soort: any) {
   flex-direction: column;
   width: 100%;
 }
-
-.search-input {
-  margin-bottom: 0.5rem;
-  padding: 0.25rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-}
-
-.search-container {
-  position: relative;
-}
-
-.suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  max-height: 150px;
-  overflow-y: auto;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  z-index: 1;
-}
-
-.suggestions li {
-  padding: 0.25rem 0.5rem;
-  cursor: pointer;
-}
-
-.suggestions li:hover {
-  background: #eee;
-}
 </style>
