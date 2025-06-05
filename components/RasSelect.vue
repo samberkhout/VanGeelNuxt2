@@ -7,28 +7,18 @@
         type="text"
         placeholder="Zoek ras"
         @focus="showSuggestions = true"
-        @input="showSuggestions = true"
+        @input="onType"
       />
       <ul v-if="search && showSuggestions" class="suggestions">
         <li
           v-for="soort in filteredSoorten.slice(0, 5)"
           :key="soort.id"
-          @click="selectSuggestion(soort.naam)"
+          @click="selectSuggestion(soort)"
         >
           {{ soort.naam }}
         </li>
       </ul>
     </div>
-    <select :value="modelValue" @change="update($event.target.value)">
-      <option disabled value="">Kies ras</option>
-      <option
-        v-for="soort in filteredSoorten"
-        :key="soort.id"
-        :value="soort.id"
-      >
-        {{ soort.naam }}
-      </option>
-    </select>
   </div>
 </template>
 
@@ -40,19 +30,32 @@ const { data: soorten } = await useFetch('/api/soorten');
 
 const search = ref('');
 const showSuggestions = ref(false);
+watchEffect(() => {
+  if (props.modelValue && soorten.value) {
+    const found = (soorten.value as any[]).find(
+      (s: any) => s.id === props.modelValue
+    );
+    if (found) {
+      search.value = found.naam;
+    }
+  }
+});
+
 const filteredSoorten = computed(() =>
   (soorten.value || []).filter((s: any) =>
     s.naam.toLowerCase().includes(search.value.toLowerCase())
   )
 );
 
-function selectSuggestion(name: string) {
-  search.value = name;
-  showSuggestions.value = false;
+function onType() {
+  showSuggestions.value = true;
+  emit('update:modelValue', '');
 }
 
-function update(value: string) {
-  emit('update:modelValue', Number(value));
+function selectSuggestion(soort: any) {
+  search.value = soort.naam;
+  emit('update:modelValue', soort.id);
+  showSuggestions.value = false;
 }
 </script>
 
@@ -60,6 +63,7 @@ function update(value: string) {
 .ras-select {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .search-input {
@@ -67,6 +71,7 @@ function update(value: string) {
   padding: 0.25rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
 }
 
 .search-container {
