@@ -1,3 +1,14 @@
+<script setup lang="ts">
+const { data: user, refresh } = await useFetch('/api/auth/me', {
+  headers: useRequestHeaders(['cookie'])
+})
+async function logout() {
+  await $fetch('/api/auth/logout', { method: 'POST' })
+  await refresh()
+  await navigateTo('/login')
+}
+</script>
+
 <template>
   <div>
     <header class="site-header">
@@ -10,6 +21,11 @@
         <NuxtLink to="/leveranciers">Leveranciers</NuxtLink>
         <NuxtLink to="/soorten">Soorten</NuxtLink>
         <NuxtLink to="/beheer">Beheer</NuxtLink>
+        <NuxtLink v-if="!user" to="/login">Login</NuxtLink>
+        <span v-else class="user-info">
+          {{ user.email }}
+          <button @click="logout">Logout</button>
+        </span>
       </nav>
     </header>
     <NuxtRouteAnnouncer />
