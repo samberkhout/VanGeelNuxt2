@@ -1,9 +1,9 @@
 # Plantenregistratie-app
 
-Start de database:
+Start de database (en de Nuxt-app) met Docker Compose:
 
 ```bash
-docker run --name planten-db -e POSTGRES_PASSWORD=planten123 -e POSTGRES_DB=planten -p 5432:5432 -d postgres
+docker compose up
 ```
 
 # Nuxt Minimal Starter
