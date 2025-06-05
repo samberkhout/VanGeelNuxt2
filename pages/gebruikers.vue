@@ -8,18 +8,28 @@ const message = ref('')
 
 const { data: users, refresh } = await useFetch('/api/users')
 const editingId = ref<string | null>(null)
-const editForm = reactive({ name: '', rol: 'USER' })
+const editForm = reactive({ name: '', email: '', password: '', rol: 'USER' })
 
 function startEdit(u: any) {
   editingId.value = u.id
   editForm.name = u.name || ''
+  editForm.email = u.email
+  editForm.password = ''
   editForm.rol = u.rol
 }
 
 async function saveEdit(id: string) {
+  const body: any = {
+    name: editForm.name,
+    email: editForm.email,
+    rol: editForm.rol,
+  }
+  if (editForm.password) {
+    body.password = editForm.password
+  }
   await $fetch(`/api/users/${id}`, {
     method: 'PATCH',
-    body: { name: editForm.name, rol: editForm.rol },
+    body,
   })
   editingId.value = null
   await refresh()
@@ -66,7 +76,9 @@ async function submit() {
   <ul class="item-list">
     <li v-for="u in users" :key="u.id">
       <div v-if="editingId === u.id" class="edit-row">
+        <input v-model="editForm.email" type="email" placeholder="email" />
         <input v-model="editForm.name" placeholder="naam" />
+        <input v-model="editForm.password" type="password" placeholder="nieuw wachtwoord" />
         <select v-model="editForm.rol">
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>

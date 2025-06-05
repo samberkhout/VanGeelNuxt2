@@ -1,10 +1,13 @@
 import { prisma } from '../../prisma'
 import { getCookie } from 'h3'
 import { z } from 'zod'
+import { hash } from 'bcryptjs'
 
 const schema = z.object({
+  email: z.string().email().optional(),
   name: z.string().optional(),
-  rol: z.enum(['USER', 'ADMIN']).optional()
+  password: z.string().min(6).optional(),
+  rol: z.enum(['USER', 'ADMIN']).optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -21,7 +24,15 @@ export default defineEventHandler(async (event) => {
 
   if (event.req.method === 'PATCH') {
     const body = await readBody(event)
-    const data = schema.parse(body)
+    const parsed = schema.parse(body)
+    const data: any = {
+      email: parsed.email,
+      name: parsed.name,
+      rol: parsed.rol,
+    }
+    if (parsed.password) {
+      data.password = await hash(parsed.password, 10)
+    }
     const user = await prisma.user.update({ where: { id }, data })
     return { id: user.id, email: user.email, name: user.name, rol: user.rol }
   }
