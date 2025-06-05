@@ -93,3 +93,13 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Admin account
+
+Voeg een eerste admin-gebruiker toe met:
+
+```bash
+npm run add:admin
+```
+
+De standaardgegevens kunnen worden aangepast via de omgevingsvariabelen `ADMIN_EMAIL`, `ADMIN_PASSWORD` en `ADMIN_NAME`.

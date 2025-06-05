@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "prisma": "prisma",
     "db:generate": "prisma generate",
-    "start": "node .output/server/index.mjs"
+    "start": "node .output/server/index.mjs",
+    "add:admin": "node scripts/add-admin.js"
   },
   "dependencies": {
     "@prisma/client": "^5.9.0",
