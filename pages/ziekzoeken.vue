@@ -38,7 +38,7 @@ async function submit() {
 </script>
 
 <template>
-  <form @submit.prevent="submit">
+  <form class="form-box" @submit.prevent="submit">
     <div>
       <label>Leverweek</label>
       <input v-model="form.leverweek" type="number" required />
