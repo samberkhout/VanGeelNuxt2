@@ -1,8 +1,21 @@
 <script setup lang="ts">
 const { data: leveranciers, refresh } = await useFetch('/api/leveranciers')
 
+const search = ref('')
+const showSuggestions = ref(false)
+const filteredLeveranciers = computed(() =>
+  (leveranciers.value || []).filter((l: any) =>
+    l.naam.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+
 const editingId = ref<number | null>(null)
 const editName = ref('')
+
+function selectSuggestion(name: string) {
+  search.value = name
+  showSuggestions.value = false
+}
 
 function startEdit(lev: { id: number; naam: string }) {
   editingId.value = lev.id
@@ -25,21 +38,111 @@ async function remove(id: number) {
 </script>
 
 <template>
-  <div>
+  <div class="page-container">
     <h2>Leveranciers</h2>
-    <ul>
-      <li v-for="lev in leveranciers" :key="lev.id">
-        <div v-if="editingId === lev.id">
+  <div class="search-container">
+    <input
+      v-model="search"
+      class="search-input"
+      type="text"
+      placeholder="Zoek leverancier"
+      @focus="showSuggestions = true"
+      @input="showSuggestions = true"
+    />
+    <ul v-if="search && showSuggestions" class="suggestions">
+      <li
+        v-for="lev in filteredLeveranciers.slice(0, 5)"
+        :key="lev.id"
+        @click="selectSuggestion(lev.naam)"
+      >
+        {{ lev.naam }}
+      </li>
+    </ul>
+  </div>
+    <ul class="item-list">
+      <li v-for="lev in filteredLeveranciers" :key="lev.id">
+        <div v-if="editingId === lev.id" class="edit-row">
           <input v-model="editName" />
           <button @click="saveEdit(lev.id)">Opslaan</button>
           <button @click="editingId = null">Annuleer</button>
         </div>
-        <div v-else>
+        <div v-else class="view-row">
           {{ lev.naam }}
-          <button @click="startEdit(lev)">Bewerk</button>
-          <button @click="remove(lev.id)">Verwijder</button>
+          <span>
+            <button @click="startEdit(lev)">Bewerk</button>
+            <button @click="remove(lev.id)">Verwijder</button>
+          </span>
         </div>
       </li>
     </ul>
   </div>
 </template>
+
+<style scoped>
+.page-container {
+  max-width: 600px;
+  margin: 1rem auto;
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.item-list li:last-child {
+  border-bottom: none;
+}
+
+.item-list button {
+  margin-left: 0.5rem;
+}
+
+.search-container {
+  position: relative;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.suggestions li {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background: #eee;
+}
+</style>
