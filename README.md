@@ -1,9 +1,21 @@
 # Plantenregistratie-app
 
-Start de database (en de Nuxt-app) met Docker Compose:
+Start alleen de PostgreSQL-database met Docker Compose:
 
 ```bash
 docker compose up
+```
+
+Of start de container direct met `docker run`:
+
+```bash
+docker run --name planten-db -e POSTGRES_PASSWORD=planten123 -e POSTGRES_DB=planten -p 5432:5432 -d postgres
+```
+
+Zorg dat je `.env` het volgende bevat:
+
+```
+DATABASE_URL=postgresql://postgres:planten123@localhost:5432/planten
 ```
 
 # Nuxt Minimal Starter
