@@ -34,20 +34,23 @@ async function remove(id: number) {
 <template>
   <div class="page-container">
     <h2>Leveranciers</h2>
+  <div class="search-container">
     <input
       v-model="search"
-      list="leveranciers-suggesties"
       class="search-input"
       type="text"
       placeholder="Zoek leverancier"
     />
-    <datalist id="leveranciers-suggesties">
-      <option
+    <ul v-if="search" class="suggestions">
+      <li
         v-for="lev in filteredLeveranciers.slice(0, 5)"
         :key="lev.id"
-        :value="lev.naam"
-      />
-    </datalist>
+        @click="search = lev.naam"
+      >
+        {{ lev.naam }}
+      </li>
+    </ul>
+  </div>
     <ul class="item-list">
       <li v-for="lev in filteredLeveranciers" :key="lev.id">
         <div v-if="editingId === lev.id" class="edit-row">
@@ -105,5 +108,33 @@ async function remove(id: number) {
 
 .item-list button {
   margin-left: 0.5rem;
+}
+
+.search-container {
+  position: relative;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.suggestions li {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background: #eee;
 }
 </style>
