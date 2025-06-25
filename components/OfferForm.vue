@@ -37,8 +37,13 @@ const form = reactive({
   opmerkingen: ''
 })
 
-function submit() {
-  alert('Offerte verstuurd!')
+async function submit() {
+  try {
+    await $fetch('/api/offerte', { method: 'POST', body: form })
+    alert('Offerte verstuurd!')
+  } catch (err) {
+    alert('Er ging iets mis. Probeer opnieuw.')
+  }
 }
 </script>
 

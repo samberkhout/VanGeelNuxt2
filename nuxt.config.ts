@@ -12,6 +12,19 @@ export default defineNuxtConfig({
       accessKey: process.env.MINIO_ACCESS_KEY || '',
       secretKey: process.env.MINIO_SECRET_KEY || '',
       bucket: process.env.MINIO_BUCKET || ''
+    },
+    supabase: {
+      url:
+        process.env.SUPABASE_URL ||
+        process.env.NEXT_PUBLIC_SUPABASE_URL ||
+        '',
+      key:
+        process.env.SUPABASE_SERVICE_ROLE_KEY ||
+        process.env.SUPABASE_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        '',
+      bucket: process.env.SUPABASE_BUCKET || 'public',
+      offersTable: process.env.SUPABASE_OFFERS_TABLE || 'offertes'
     }
   },
   app: {
