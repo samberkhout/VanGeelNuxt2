@@ -2,6 +2,10 @@ import { Client } from 'minio'
 
 export async function getSignedUrls(prefix: string) {
   const config = useRuntimeConfig()
+  const bucket = config.minio.bucket
+
+  if (!bucket) return []
+
   const client = new Client({
     endPoint: config.minio.endPoint,
     port: config.minio.port,
@@ -9,7 +13,6 @@ export async function getSignedUrls(prefix: string) {
     accessKey: config.minio.accessKey,
     secretKey: config.minio.secretKey
   })
-  const bucket = config.minio.bucket
 
   const objects: string[] = await new Promise((resolve, reject) => {
     const stream = client.listObjects(bucket, prefix, true)
