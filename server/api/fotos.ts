@@ -1,14 +1,7 @@
-import { randomBytes } from 'crypto'
+import { getSignedUrls } from '~/utils/signedUrl'
 
 export default defineEventHandler(async (event) => {
   const { type } = getQuery(event)
-  const files =
-    type === 'catering'
-      ? ['catering1.jpg', 'catering2.jpg', 'catering3.jpg']
-      : ['verhuur1.jpg', 'verhuur2.jpg', 'verhuur3.jpg']
-
-  return files.map((file) => {
-    const token = randomBytes(8).toString('hex')
-    return `https://example.com/${file}?token=${token}`
-  })
+  const prefix = type === 'catering' ? 'catering-fotos/' : 'verhuur-fotos/'
+  return await getSignedUrls(prefix)
 })
