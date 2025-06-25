@@ -23,7 +23,8 @@ export default defineNuxtConfig({
         process.env.SUPABASE_KEY ||
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         '',
-      bucket: process.env.SUPABASE_BUCKET || 'public'
+      bucket: process.env.SUPABASE_BUCKET || 'public',
+      offersTable: process.env.SUPABASE_OFFERS_TABLE || 'offertes'
     }
   },
   app: {
