@@ -1,0 +1,8 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpotifyQRPlayer.MainPage">
+    <StackLayout Padding="20" Spacing="20" VerticalOptions="Center">
+        <Button Text="Scan QR" Clicked="OnScanQrClicked" />
+        <Label x:Name="StatusLabel" Text="" HorizontalOptions="Center" />
+    </StackLayout>
+</ContentPage>
