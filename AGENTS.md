@@ -54,14 +54,12 @@ Een mobiele app die een QR-code scant, en het bijbehorende Spotify-nummer automa
 ---
 
 ## 🛠️ Stack
-
-| Onderdeel         | Technologie                           |
-|-------------------|----------------------------------------|
-| Framework         | Flutter / React Native                 |
-| QR scanner        | `flutter_barcode_scanner` / `expo-camera` |
-| Spotify integratie| Spotify Web API + Spotify SDK          |
-| Beveiliging       | Geen tekstweergave, geen metadata-oproep |
-| Streaming         | Alleen via Spotify Connect (eigen Spotify app nodig) |
+Onderdeel	Technologie (.NET)
+Framework	.NET MAUI (Multi-platform App UI)
+QR scanner	ZXing.Net.MAUI (open source QR/barcode scanning in MAUI)
+Spotify integratie	Spotify Web API via HttpClient + Spotify SDK (voor Connect-auth)
+Beveiliging	Geen lokale opslag van tekst of metadata; gebruik veilige API-calls
+Streaming	Alleen via Spotify Connect (Spotify-app op apparaat vereist)
 
 ---
 
