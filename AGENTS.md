@@ -1,86 +1,143 @@
-# AGENTS.md – QR-to-Mystery-Spotify App
+
+# AGENTS.md – QR → Spotify Player App (Zonder info tonen)
 
 ## 🎯 Doel
-Een mobiele app die een QR-code scant, en het bijbehorende Spotify-nummer automatisch afspeelt zonder titel, artiest of cover te tonen.
+
+Een eenvoudige mobiele app waarin je alleen een QR-code scant. De QR bevat een Spotify-link of URI, en de app opent automatisch dat nummer in de Spotify-app. Je ziet niet wie de artiest is of welk nummer het is.
 
 ---
 
-## 🔐 AuthAgent
+## ⚙️ Stack
 
-**Doel:** Log de gebruiker in met zijn Spotify-account om muziek af te kunnen spelen.
-
-### Taken:
-- Start OAuth2 login (met `streaming`, `user-read-playback-state`, `user-modify-playback-state`)
-- Bewaar toegangstokens
-- Geef tokens door aan PlayTrackAgent
-
----
-
-## 📷 QRScanAgent
-
-**Doel:** Scan QR-code, en haal de verborgen Spotify-track-link op.
-
-### Taken:
-- Open camera en scan QR-code
-- Controleer of de link begint met `https://open.spotify.com/track/`
-- Extracteer `trackId` uit URL
-- Stuur `trackId` naar PlayTrackAgent
+- **Frontend**: React Native + Expo
+- **Modules**:
+    - `expo-barcode-scanner` – voor QR-scanning
+    - `expo-linking` – om Spotify-link te openen
+    - Geen backend of database nodig
 
 ---
 
-## 🔊 PlayTrackAgent
+## 📁 Structuur
 
-**Doel:** Speel de track automatisch af via Spotify, **zonder** metadata te tonen.
-
-### Taken:
-- Start Spotify-connectie via Web Playback SDK of Spotify Connect
-- Speel track af op actief apparaat
-- **Geen metadata ophalen of tonen**
-- Toon enkel generiek scherm zoals "🎵 Jouw verrassing speelt nu..."
-
----
-
-## 🎨 UIAgent
-
-**Doel:** Eenvoudige, cleane interface zonder informatie over het nummer.
-
-### Schermen:
-- Home: "Scan QR om te starten"
-- Camera-scherm
-- Laadscherm: "Track wordt geladen..."
-- Afspelen-scherm: "🎧 Luister zonder te kijken"
-- Eventueel een "stop" of "volgende QR" knop
+```
+qr-spotify-app/
+├── App.js
+├── screens/
+│   └── QRPlayerScreen.js
+├── components/
+│   └── QRScanner.js
+└── README.md
+```
 
 ---
 
-## 🛠️ Stack
-Onderdeel	Technologie (.NET)
-Framework	.NET MAUI (Multi-platform App UI)
-QR scanner	ZXing.Net.MAUI (open source QR/barcode scanning in MAUI)
-Spotify integratie	Spotify Web API via HttpClient + Spotify SDK (voor Connect-auth)
-Beveiliging	Geen lokale opslag van tekst of metadata; gebruik veilige API-calls
-Streaming	Alleen via Spotify Connect (Spotify-app op apparaat vereist)
+## 🚀 Setup
+
+```bash
+npx create-expo-app qr-spotify-app
+cd qr-spotify-app
+npm install expo-barcode-scanner
+```
 
 ---
 
-## 🔄 Flow
+## 📲 Functieoverzicht
 
-1. Gebruiker opent app
-2. Klikt op "Scan QR"
-3. QR-code bevat Spotify-tracklink → wordt gelezen
-4. Track wordt direct afgespeeld via Spotify
-5. App toont géén naam, cover of artiest
+- Scan QR-code met `spotify:track:...` of `https://open.spotify.com/track/...`
+- Opent direct Spotify om af te spelen
+- Geen verdere informatie zichtbaar
+- App keert automatisch terug naar scan-modus voor volgende QR
+
+---
+
+## 📄 App.js
+
+```js
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import QRPlayerScreen from './screens/QRPlayerScreen';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="QRPlayer" component={QRPlayerScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
 
 ---
 
-## ❗ Belangrijk
+## 📷 QRPlayerScreen.js
 
-Spotify **verplicht** dat je afspeelt via een "active device". Dat betekent:
-- Gebruiker moet Spotify open hebben op telefoon of desktop
-- Je kunt **niet direct afspelen in je app**, tenzij je Web Playback SDK gebruikt (alleen op web)
+```js
+import React, { useState, useEffect } from 'react';
+import { Text, View, Button, StyleSheet, Linking } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
-Alternatief:
-- App detecteert actief Spotify-apparaat
-- Stuurt API-call om track daar te starten (`/me/player/play`)
+export default function QRPlayerScreen() {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ data }) => {
+    setScanned(true);
+    if (data.startsWith('spotify:') || data.includes('open.spotify.com')) {
+      Linking.openURL(data.includes('http') ? data : `https://open.spotify.com/track/${data.split(':')[2]}`);
+    }
+    setTimeout(() => setScanned(false), 2000); // opnieuw klaar om te scannen
+  };
+
+  if (hasPermission === null) return <Text>Toestemming vragen...</Text>;
+  if (hasPermission === false) return <Text>Geen toegang tot camera</Text>;
+
+  return (
+    <View style={{ flex: 1 }}>
+      <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={{ flex: 1 }}
+      />
+      {scanned && <Text style={styles.info}>Nummer wordt afgespeeld in Spotify...</Text>}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  info: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+    backgroundColor: 'black',
+    color: 'white',
+    padding: 10,
+    borderRadius: 10,
+  },
+});
+```
 
 ---
+
+## ✅ MVP Checklist
+
+- [x] QR-code scannen
+- [x] Spotify-link herkennen
+- [x] Afspelen in Spotify
+- [x] Geen info tonen
+- [x] Klaar voor volgende QR
+
+---
+
+## 🧪 Testen
+
+Scan QR-code met `spotify:track:...` of `https://open.spotify.com/track/ID`. App opent Spotify direct, speelt nummer af. Gebruik testcodes op papier of vanaf scherm.
+
