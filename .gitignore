@@ -15,3 +15,6 @@ package-lock.json
 
 # Uploaded images
 /public/uploads/
+
+# Expo
+.expo/
